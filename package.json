@@ -5,7 +5,13 @@
   "repository": "https://github.com/WesleyHs/node.git",
   "author": "Wesley henrique <wesley.henrique.pgm@gmail.com>",
   "license": "MIT",
+  "scripts" :{
+    "dev":"nodemon index.js"
+  },
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
