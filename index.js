@@ -8,20 +8,51 @@ server.use(express.json())
 
 const users = ['diego', 'claudio', 'victor'];
 
+//middlewares global
+server.use((req, res, next) =>{
+    console.time('Request');
+    console.log(`Metodo: ${req.method}; URL: ${req.url}`);
+
+    next();
+
+    console.timeEnd('Request');
+})
+
+//middlewares local 
+function checkUserExists(req, res, next){
+    if(!req.body.name){
+        return res.status(400).json({ error: 'User name is required'})
+    }
+
+    return next();
+}
+
+//middlewares vericação
+function checkUserInArray(req, res, next){
+
+    const user = users[req.params.index]
+    if (!users[req.params.index]){
+        return res.status(400).json({ error: 'User does not exists required'})
+
+    }
+    req.user = user;
+
+    return next()
+}
+
+
 //retorna todos usuarios
-server.get('/users/', (req, res) => {
+server.get('/users/',(req, res) => {
     return res.json(users);
 })
 
 //retorna um usuario
-server.get('/users/:index', (req, res) => {
-    const { index } = req.params;
-
-    return res.json(users[index]);
+server.get('/users/:index', checkUserInArray, (req, res) => {
+    return res.json(users);
 })
 
 //cria um usuario
-server.post('/users', (req, res)=>{
+server.post('/users',checkUserExists,(req, res)=>{
     const { name } = req.body;
 
     users.push(name);
@@ -29,7 +60,7 @@ server.post('/users', (req, res)=>{
 })
 
 //altera um usuario
-server.put('/users/:index', (req, res) =>{
+server.put('/users/:index', checkUserExists, checkUserInArray, (req, res) =>{
     const { index } = req.params;
     const { name } = req.body;
 
@@ -41,7 +72,7 @@ server.put('/users/:index', (req, res) =>{
 
 //deletar um usuario
 
-server.delete('/users/:index', (req, res)=> {
+server.delete('/users/:index',checkUserInArray, (req, res)=> {
     const { index } = req.params;
 
     users.splice(index, 1) //splice percorre o vetor atrás da posição
