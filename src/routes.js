@@ -1,16 +1,9 @@
-import { Router } from 'express';
-import User from './app/models/User';
+import { Router } from 'express'; // importando o Router do express
 
-const routes = new Router();
+import UserController from './app/controllers/UserController'; // importa o UserController
 
-routes.get('/', async (req, res) => {
-  const user = await User.create({
-    name: 'Wesley',
-    email: 'testando@gmail.com',
-    password_hash: '123456789',
-  });
+const routes = new Router(); // cria as rotas
 
-  return res.json(user);
-});
+routes.post('/users', UserController.store); // rota do create user
 
 export default routes;
