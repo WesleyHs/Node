@@ -6,6 +6,7 @@ import UserController from './app/controllers/UserController'; // importa o User
 import SessionController from './app/controllers/SessionController'; // importa o SessionController
 import FileController from './app/controllers/FileController'//importando o FileController
 import ProviderController from './app/controllers/ProviderController'//importando o FileController
+import AppointmentsController from './app/controllers/AppointmentsController'; // importa o UserController
 
 
 import authMiddleware from './app/middlewares/auth';
@@ -21,6 +22,9 @@ routes.use(authMiddleware) //só acessa abaixo se o user estiver logado
 routes.put('/users', UserController.update); //rota pra atualizar
 
 routes.get('/providers', ProviderController.index);
+
+routes.post('/appointment', AppointmentsController.store);
+
 
 routes.post('/files', upload.single('file'), FileController.store); //rota dos uploads de imagens
 
