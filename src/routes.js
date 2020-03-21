@@ -4,10 +4,10 @@ import multerConfig from './config/multer'
 
 import UserController from './app/controllers/UserController'; // importa o UserController
 import SessionController from './app/controllers/SessionController'; // importa o SessionController
-import FileController from './app/controllers/FileController'//importando o FileController
-import ProviderController from './app/controllers/ProviderController'//importando o FileController
-import AppointmentsController from './app/controllers/AppointmentsController'; // importa o UserController
-
+import FileController from './app/controllers/FileController'//importando o 
+import ProviderController from './app/controllers/ProviderController'//importando o 
+import AppointmentsController from './app/controllers/AppointmentsController'; // importa o 
+import ScheduleController from './app/controllers/ScheduleController' //importa 
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -26,6 +26,7 @@ routes.get('/providers', ProviderController.index);
 routes.get('/appointment', AppointmentsController.index); // listar agendamentos
 routes.post('/appointment', AppointmentsController.store); //agendamentos
 
+routes.get('/schedule', ScheduleController.index); //listagem de pproviders
 
 routes.post('/files', upload.single('file'), FileController.store); //rota dos uploads de imagens
 
