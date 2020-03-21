@@ -23,7 +23,8 @@ routes.put('/users', UserController.update); //rota pra atualizar
 
 routes.get('/providers', ProviderController.index);
 
-routes.post('/appointment', AppointmentsController.store);
+routes.get('/appointment', AppointmentsController.index); // listar agendamentos
+routes.post('/appointment', AppointmentsController.store); //agendamentos
 
 
 routes.post('/files', upload.single('file'), FileController.store); //rota dos uploads de imagens

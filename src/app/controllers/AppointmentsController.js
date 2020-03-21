@@ -1,11 +1,41 @@
 import * as Yup from 'yup';
-import { startOfHour, parseISO, isBefore} from 'date-fns'
-import User from '../models/User'
+import { startOfHour, parseISO, isBefore } from 'date-fns'
 
+import User from '../models/User'
 import Appointment from '../models/Appointment';
+import File from '../models/File';
+
 
 
 class AppointmentsController {
+    async index(req, res) {
+
+        const {page = 1} = req.query;
+
+        const appointment = await Appointment.findAll({ //mostrar todos agendamentos
+            where: { user_id: req.userId, canceled_at: null },
+            order: ['date'], //ordenado por data
+            limit:20, //número de lista
+            offset: (page - 1) * 20, //numero de pagina
+            attributes: ['id', 'date'],
+            include: [
+                {
+                    model: User,
+                    as: 'provider',
+                    attributes: ['id', 'name'],
+                    include: [
+                        {
+                            model: File,
+                            as: 'avatar',
+                            attributes: ['id','path', 'url'],
+                        }
+                    ]
+                }
+            ]
+        });
+        return res.json(appointment)
+    }
+
     async store(req, res) {
         const schema = Yup.object().shape({
             provider_id: Yup.number().required(),
@@ -13,7 +43,7 @@ class AppointmentsController {
         });
 
         if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation fails'})
+            return res.status(400).json({ error: 'Validation fails' })
         }
 
         const { provider_id, date } = req.body;
@@ -25,14 +55,14 @@ class AppointmentsController {
         });
 
         if (!checkProvider) {
-            return res.status(401).json({ error: 'You can only create appointments with providers'})
+            return res.status(401).json({ error: 'You can only create appointments with providers' })
         }
 
         const hourStart = startOfHour(parseISO(date));
 
         //ver se a hora já passou da hora atual
         if (isBefore(hourStart, new Date())) {
-            return res.status(400).json({ error:  'Past dates are not permitted'})
+            return res.status(400).json({ error: 'Past dates are not permitted' })
         }
 
         //se tem um agendamento no messmo horario
@@ -46,7 +76,7 @@ class AppointmentsController {
         });
 
         if (checkAvailability) {
-            return res.status(400).json({ error: "Appoitmente date is not available"})
+            return res.status(400).json({ error: "Appoitmente date is not available" })
         }
 
 
